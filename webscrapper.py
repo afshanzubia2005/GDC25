@@ -3,8 +3,8 @@ import json
 
 API_KEY = "AIzaSyD2jNotloRvwYU-bALHLyv_W0hKpsqWKMA"
 # this is my api key 
-LOCATION = "40.5169,74.4063"  # Replace with your city latitude/longitude
-RADIUS = 1000000000000  # 50km search radius
+LOCATION = "40.5169,74.4063"  #new jersey lat/long
+RADIUS = 1000000000000  #search radius
 QUERY = "nonprofit organization"
 
 
