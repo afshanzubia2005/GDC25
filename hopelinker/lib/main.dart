@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:hopelinker/signup.dart';
+// import 'package:hopelinker/survey.dart';
 
 void main() {
   runApp(const MainApp());
@@ -172,7 +174,9 @@ class AuthScreen extends StatelessWidget {
                 width: fieldW,
                 child: OutlinedButton(
                   onPressed: () {
-                    // Handle sign up
+                    Navigator.push(context, 
+                    MaterialPageRoute(builder: (context) => const SignupScreen()),
+                    );
                   },
                   style: OutlinedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 16),
