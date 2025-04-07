@@ -1,12 +1,10 @@
 import requests
 import json
 
-API_KEY = "AIzaSyD2jNotloRvwYU-bALHLyv_W0hKpsqWKMA"
-# this is my api key 
+API_KEY = "AIzaSyAQWJaPGOzhOUqBeJZsaJDk_Ro7OTev77g"
 LOCATION = "40.5169,74.4063"  #new jersey lat/long
 RADIUS = 1000000000000  #search radius
-QUERY = "nonprofit organization"
-
+QUERY = "food"
 
 nonprofits = []
 def fetch_nonprofits():
