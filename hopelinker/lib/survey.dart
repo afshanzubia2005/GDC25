@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hopelinker/map_page.dart';
 
 class SurveyScreen extends StatefulWidget {
   const SurveyScreen({super.key});
@@ -76,7 +77,10 @@ class SurveyScreen extends StatefulWidget {
     ),
   ),
   controlsBuilder: (context, details) {
-    return Row(
+    return Column(
+      children: [
+    // first row --> buttons: Next/Complete & back
+     Row(
       children: [
         ElevatedButton(onPressed: details.onStepContinue, 
         child: Text(_currentStep < _questions.length - 1 ? 'Next' : 'Complete'),
@@ -88,6 +92,22 @@ class SurveyScreen extends StatefulWidget {
         ),
       ],
     ],
+    ),
+
+      // add another button called skipsurvey
+      const SizedBox(height: 10), // space between buttons
+
+      //SkipSurvey button --> leads to Map_page page
+      ElevatedButton(
+        onPressed: (){
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => MapPage()),
+          );
+        },
+        child: const Text('Skip Survey'),   //text to be printed
+        ),
+      ],
     );
   },
         ),
