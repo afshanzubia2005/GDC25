@@ -13,26 +13,38 @@ class MapPage extends StatefulWidget{
 // this is private so underscore
 class _MapPageState extends State<MapPage>{
   late final WebViewController _controller;
+  late final Future<void> _initialization;
 
   @override
   void initState(){
     super.initState();
-    _loadLocalHtml();
-
+    _initialization = _loadLocalHtml();
   }
 
-  Future<void> _loadLocalHtml() async {
-    final htmlString = await rootBundle.loadString('assets/map.html');
-    _controller = WebViewController()
-      ..loadHtmlString(htmlString);
-
-  }
+Future<void> _loadLocalHtml() async {
+  final htmlString = await rootBundle.loadString('assets/map.html');
+  _controller = WebViewController();
+  await _controller.loadHtmlString(htmlString);
+  
+  // Optional: Add these settings for better webview experience
+  await _controller.setJavaScriptMode(JavaScriptMode.unrestricted);
+  await _controller.setBackgroundColor(Colors.white);
+}
 
   @override
-  Widget build(BuildContext context){
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('User-centered map')),
-      body: WebViewWidget(controller: _controller)
+      body: FutureBuilder<void>(
+        future: _initialization,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.done) {
+            return WebViewWidget(controller: _controller);
+          }
+          // Show loading indicator while initializing
+          return const Center(child: CircularProgressIndicator());
+        },
+      ),
     );
   }
 }

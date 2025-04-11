@@ -18,10 +18,10 @@ class SurveyScreen extends StatefulWidget {
 2. 
 */
     final List<Map<String, dynamic>> _questions = [
-      // {
-      //   'question': '',
-      //   'options': [''],
-      // }
+      {
+        'question': 'Age',
+        'options': ['1'],
+      }
     ];
 
     @override
