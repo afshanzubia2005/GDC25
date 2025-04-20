@@ -11,25 +11,22 @@ class MapPage extends StatefulWidget{
 
 }
 // this is private so underscore
-class _MapPageState extends State<MapPage>{
-  late final WebViewController _controller;
+class _MapPageState extends State<MapPage> {
+  late final WebViewController _controller = WebViewController();
   late final Future<void> _initialization;
 
   @override
-  void initState(){
+  void initState() {
     super.initState();
     _initialization = _loadLocalHtml();
   }
 
-Future<void> _loadLocalHtml() async {
-  final htmlString = await rootBundle.loadString('assets/map.html');
-  _controller = WebViewController();
-  await _controller.loadHtmlString(htmlString);
-  
-  // Optional: Add these settings for better webview experience
-  await _controller.setJavaScriptMode(JavaScriptMode.unrestricted);
-  await _controller.setBackgroundColor(Colors.white);
-}
+  Future<void> _loadLocalHtml() async {
+    final htmlString = await rootBundle.loadString('assets/map.html');
+    await _controller.setJavaScriptMode(JavaScriptMode.unrestricted);
+    await _controller.setBackgroundColor(Colors.white);
+    await _controller.loadHtmlString(htmlString);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +38,6 @@ Future<void> _loadLocalHtml() async {
           if (snapshot.connectionState == ConnectionState.done) {
             return WebViewWidget(controller: _controller);
           }
-          // Show loading indicator while initializing
           return const Center(child: CircularProgressIndicator());
         },
       ),
