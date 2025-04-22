@@ -15,13 +15,13 @@ class _SurveyScreenState extends State<SurveyScreen> {
       'options': ['Yes', 'No'],
     },
     {
-      'question': 'Name',
-      'options': [],
+      'question': 'Display Name',
+      'options': [], // should it be legal or user has an option to display custom name?
       'isText': true,
     },
     {
       'question': 'Age',
-      'options': [],
+      'options': [], // make range
       'isText': true,
     },
     {
@@ -29,8 +29,8 @@ class _SurveyScreenState extends State<SurveyScreen> {
       'options': ['Male', 'Female', 'Non-binary', 'Other', 'Prefer not to say'],
     },
     {
-      'question': 'Address (if valid)',
-      'options': [],
+      'question': 'Address',
+      'options': [], // check online and autocorrect?
       'isText': true,
     },
     {
@@ -39,12 +39,12 @@ class _SurveyScreenState extends State<SurveyScreen> {
     },
     {
       'question': 'City, State, Zip Code',
-      'options': [],
+      'options': [], // be options
       'isText': true,
     },
     {
-      'question': 'Household income (if valid)',
-      'options': [],
+      'question': 'Household income',
+      'options': ['Less than or equal to \$30,000', '\$30,001 - \$58,020', '\$58,021 - \$94,000', '\$94,001 - \$153,000', 'Greater than \$153,000'],
       'isText': true,
     },
     {
@@ -53,12 +53,12 @@ class _SurveyScreenState extends State<SurveyScreen> {
     },
     {
       'question': 'Phone number',
-      'options': [],
+      'options': [], // ensure number is valid or convert to valid number
       'isText': true,
     },
     {
       'question': 'Email address',
-      'options': [],
+      'options': [], // make sure it is email
       'isText': true,
     },
     {
@@ -66,7 +66,7 @@ class _SurveyScreenState extends State<SurveyScreen> {
       'options': ['Single', 'Married', 'Divorced', 'Widowed'],
     },
     {
-      'question': 'If married, how many children?',
+      'question': 'If married, how many children between you and your spouse?',
       'options': [],
       'isText': true,
     },
@@ -80,7 +80,7 @@ class _SurveyScreenState extends State<SurveyScreen> {
       'options': [
         'U.S. Citizen',
         'Naturalized Citizen',
-        'Greencard Holder',
+        'U.S Resident',
         'Visa Holder'
       ],
     },
@@ -95,9 +95,9 @@ class _SurveyScreenState extends State<SurveyScreen> {
         'Some high school',
         'High school diploma',
         'GED',
-        'Some college',
-        'Bachelors',
+        'Certificate',
         'Associates',
+        'Bachelors',
         'Graduates'
       ],
     },
