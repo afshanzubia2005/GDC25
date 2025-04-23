@@ -4,7 +4,7 @@ import 'dart:convert'; // for jsonDecode
 
 // as of now, this file defines a hardcoded addess value and defines  a function main() that can be used to get its lat/lon coordinates
 
-const addressString = '35 Clark Avenue Edison NJ 08817';
+const addressString = '2013 Deer Ridge Drive, Red Bank NJ 07701';
 
 String buildQuery(String address) {
   final uri_address = Uri.encodeComponent(address);
