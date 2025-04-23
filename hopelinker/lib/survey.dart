@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hopelinker/map_page.dart';
+import 'package:hopelinker/home.dart';
 
 class SurveyScreen extends StatefulWidget {
   const SurveyScreen({super.key});
@@ -7,6 +8,14 @@ class SurveyScreen extends StatefulWidget {
   @override
   State<SurveyScreen> createState() => _SurveyScreenState();
 }
+
+final List<String> _usStates = [
+  'AL','AK','AZ','AR','CA','CO','CT','DE','FL','GA','HI','ID','IL','IN','IA','KS','KY','LA','ME','MD','MA','MI','MN','MS','MO','MT','NE','NV','NH','NJ','NM','NY','NC','ND','OH','OK','OR','PA','RI','SC','SD','TN','TX','UT','VT','VA','WA','WV','WI','WY'
+];
+
+String? _selectedCity;
+String? _selectedState;
+String? _selectedZip;
 
 class _SurveyScreenState extends State<SurveyScreen> {
   final List<Map<String, dynamic>> _questions = [
@@ -21,7 +30,7 @@ class _SurveyScreenState extends State<SurveyScreen> {
     },
     {
       'question': 'Age',
-      'options': [], // make range
+      'options': [],
       'isText': true,
     },
     {
@@ -39,13 +48,18 @@ class _SurveyScreenState extends State<SurveyScreen> {
     },
     {
       'question': 'City, State, Zip Code',
-      'options': [], // be options
-      'isText': true,
+      'options': [],
+      'isText': 'cityStateZip', // Custom flag for special handling
     },
     {
       'question': 'Household income',
-      'options': ['Less than or equal to \$30,000', '\$30,001 - \$58,020', '\$58,021 - \$94,000', '\$94,001 - \$153,000', 'Greater than \$153,000'],
-      'isText': true,
+      'options': [
+        'Less than or equal to \$30,000',
+        '\$30,001 - \$58,020',
+        '\$58,021 - \$94,000',
+        '\$94,001 - \$153,000',
+        'Greater than \$153,000'
+      ],
     },
     {
       'question': 'Are you receiving assistance?',
@@ -175,7 +189,7 @@ class _SurveyScreenState extends State<SurveyScreen> {
                   padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: const Color(0xFFF5F5F5).withOpacity(0.3),
+                    color: const Color(0xFFF5F5F5).withValues(alpha: 0.3),
                     boxShadow: [
                       BoxShadow(
                         color: Colors.black.withAlpha(26),
@@ -236,8 +250,77 @@ class _SurveyScreenState extends State<SurveyScreen> {
                     ),
                   ),
                   const SizedBox(height: 32),
-                  // Options as buttons or text field
-                  if (isText)
+                  // Options as buttons or text field or city/state/zip
+                  if (currentQ['isText'] == 'cityStateZip')
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 32.0),
+                      child: Row(
+                        children: [
+                          // City TextField
+                          Expanded(
+                            child: TextField(
+                              decoration: const InputDecoration(
+                                labelText: 'City',
+                                filled: true,
+                                fillColor: Colors.white,
+                                border: OutlineInputBorder(),
+                              ),
+                              onChanged: (val) {
+                                setState(() {
+                                  _selectedCity = val;
+                                  _answers[_currentStep] = '${_selectedCity ?? ''},${_selectedState ?? ''},${_selectedZip ?? ''}';
+                                });
+                              },
+                            ),
+                          ),
+                        const SizedBox(width: 8),
+                        // State Dropdown
+                        Expanded(
+                          child: DropdownButtonFormField<String>(
+                            value: _selectedState,
+                            decoration: const InputDecoration(
+                              labelText: 'State',
+                              filled: true,
+                              fillColor: Colors.white,
+                              border: OutlineInputBorder(),
+                            ),
+                            items: _usStates.map((state) {
+                              return DropdownMenuItem(
+                                value: state,
+                                child: Text(state),
+                              );
+                            }).toList(),
+                            onChanged: (val) {
+                              setState(() {
+                                _selectedState = val;
+                                _answers[_currentStep] = '${_selectedCity ?? ''},${_selectedState ?? ''},${_selectedZip ?? ''}';
+                              });
+                            },
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        // Zip TextField
+                        Expanded(
+                          child: TextField(
+                            decoration: const InputDecoration(
+                              labelText: 'Zip',
+                              filled: true,
+                              fillColor: Colors.white,
+                              border: OutlineInputBorder(),
+                            ),
+                            keyboardType: TextInputType.number,
+                            onChanged: (val) {
+                              setState(() {
+                                _selectedZip = val;
+                                _answers[_currentStep] = '${_selectedCity ?? ''},${_selectedState ?? ''},${_selectedZip ?? ''}';
+                              });
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                  )
+                  else if (isText == true)
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 32.0),
                       child: TextField(
@@ -325,7 +408,7 @@ class _SurveyScreenState extends State<SurveyScreen> {
                                 } else {
                                   Navigator.pushReplacement(
                                     context,
-                                    MaterialPageRoute(builder: (context) => MapPage()),
+                                    MaterialPageRoute(builder: (context) => HomeMenu()),
                                   );
                                 }
                               }
