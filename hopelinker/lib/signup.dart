@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hopelinker/auth_service.dart';
 import 'package:hopelinker/survey.dart';
 
 class SignupScreen extends StatefulWidget {
@@ -273,8 +274,13 @@ class _SignupScreenState extends State<SignupScreen> {
                       SizedBox(
                         width: fieldWidth,
                         child: ElevatedButton(
-                          onPressed: () {
+                          onPressed: () async {
                             if (_validateFields()) {
+                              await AuthService().signup(
+                                email: _emailController.text, 
+                                password: _passwordController.text
+                              );
+                              if (!context.mounted) return;
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(builder: (context) => SurveyScreen()),

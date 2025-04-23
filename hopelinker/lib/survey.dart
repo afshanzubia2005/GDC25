@@ -71,11 +71,6 @@ class _SurveyScreenState extends State<SurveyScreen> {
       'isText': true,
     },
     {
-      'question': 'If married, what is status of spouse?',
-      'options': [],
-      'isText': true,
-    },
-    {
       'question': 'Status',
       'options': [
         'U.S. Citizen',
@@ -83,6 +78,11 @@ class _SurveyScreenState extends State<SurveyScreen> {
         'Greencard Holder',
         'Visa Holder'
       ],
+    },
+    {
+      'question': 'If married, what is status of spouse?',
+      'options': [],
+      'isText': true,
     },
     {
       'question': 'Number of dependents',

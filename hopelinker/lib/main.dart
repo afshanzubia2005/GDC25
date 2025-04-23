@@ -4,6 +4,9 @@ import 'package:hopelinker/survey.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:hopelinker/auth_service.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -11,6 +14,9 @@ Future<void> main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   ); 
+  
+  FirebaseFirestore firestore = FirebaseFirestore.instance;
+
   runApp(const MainApp());
 }
 
@@ -250,8 +256,13 @@ class _AuthScreenState extends State<AuthScreen> {
                     SizedBox(
                       width: fieldWidth,
                       child: ElevatedButton(
-                        onPressed: () {
+                        onPressed: () async {
                           if (_validateFields()) {
+                            await AuthService().signin(
+                              email: _userController.text,
+                              password: _passController.text,
+                            );
+
                             Navigator.push(
                               context,
                               MaterialPageRoute(builder: (context) => const SurveyScreen()),

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "777597872595",
+    "project_id": "hopelinker-60302",
+    "storage_bucket": "hopelinker-60302.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:777597872595:android:8f3d46605ad3a26a03a726",
+        "android_client_info": {
+          "package_name": "com.example.hopelinker"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCSBBskOT7cvZhFMdwF7LS9fRYGd7SeqiU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
