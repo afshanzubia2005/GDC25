@@ -1,17 +1,15 @@
-import 'dart:collection';
 import 'package:http/http.dart' as http;
 import 'dart:convert'; // for jsonDecode
-
 // as of now, this file defines a hardcoded addess value and defines  a function main() that can be used to get its lat/lon coordinates
 
 const addressString = '35 Clark Avenue Edison NJ 08817';
 
 String buildQuery(String address) {
-  final uri_address = Uri.encodeComponent(address);
-  return "https://nominatim.openstreetmap.org/search?q=$uri_address&format=jsonv2";
+  final uriAddress = Uri.encodeComponent(address);
+  return "https://nominatim.openstreetmap.org/search?q=$uriAddress&format=jsonv2";
 }
 
-Future<List> main() async {
+Future<List> main(addressString) async {
   // call to take hardcoded address and get coordinates
 
   String query = buildQuery(addressString);
