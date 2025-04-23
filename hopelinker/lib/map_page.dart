@@ -3,13 +3,13 @@ import 'package:webview_flutter/webview_flutter.dart';
 import 'package:flutter/services.dart' show rootBundle;
 
 // this is public so no underscore in name
-class MapPage extends StatefulWidget{
+class MapPage extends StatefulWidget {
   const MapPage({super.key});
-  
+
   @override
   State<MapPage> createState() => _MapPageState();
-
 }
+
 // this is private so underscore
 class _MapPageState extends State<MapPage> {
   late final WebViewController _controller = WebViewController();
@@ -22,7 +22,9 @@ class _MapPageState extends State<MapPage> {
   }
 
   Future<void> _loadLocalHtml() async {
-    final htmlString = await rootBundle.loadString('assets/map.html');
+    final htmlString = await rootBundle.loadString(
+      'assets/html/leafletmap.html',
+    );
     await _controller.setJavaScriptMode(JavaScriptMode.unrestricted);
     await _controller.setBackgroundColor(Colors.white);
     await _controller.loadHtmlString(htmlString);

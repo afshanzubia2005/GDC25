@@ -1,0 +1,26 @@
+{
+    "nonprofit1": {
+        "name": "Believe in Newark",
+        "address": "191 Central Ave",
+        "city state zipcode": "Newark, NJ, 07103",
+        "type of benefit": "General Wellness",
+        "other tags" : "N/A",
+        "link": "N/A"
+    },
+    "nonprofit2": {
+        "name": "Community FoodBank of New Jersey",
+        "address": "31 Evans Terminal Rd #1",
+        "city state zipcode": "Hillside, NJ, 07205",
+        "type of benefit": "Hunger",
+        "other tags" : "N/A",
+        "link": "https://cfbnj.org/?gad_source=1"
+    },
+    "nonprofit3": {
+        "name": "Habitat for Humanity of Greater Newark",
+        "address": "58 Park Pl",
+        "city state zipcode": "Newark, NJ 07102",
+        "type of benefit": "Homelessness",
+        "other tags" : "N/A",
+        "link": "https://www.habitatnewark.org/"
+    }
+}

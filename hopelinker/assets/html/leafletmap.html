@@ -1,5 +1,4 @@
 <!-- displays a basic map using OpenStreetMap tiles -->
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -20,22 +19,20 @@
   />
   <script src="https://unpkg.com/maplibre-gl@2.2.1/dist/maplibre-gl.js"></script>
   <script src="https://unpkg.com/@maplibre/maplibre-gl-leaflet@0.0.20/leaflet-maplibre-gl.js"></script>
-  
   <style>
     #map {position: absolute; top: 0; bottom: 0; left: 0; right: 0;}
   </style>
 
 </head>
 <body>
+  <div id="map"></div>
 <!-- actually load the map here -->
-
-  <div id= "map"></div>
-  <script>
-<!-- hardcoded coordinate points of NJIT as map center: [40.7424, 74.1784] with zoom value of 5 -->
-    var map = L.map('map').setView([40.7424, -74.1784], 15);
-    L.maplibreGL({
-      style: 'https://tiles.openfreemap.org/styles/bright'
-    }).addTo(map)
-  </script>
+  <script src="../js/map.js"></script>
+  <style>
+    #map {
+      height: 10000px;
+      width: 100%;
+    }
+  </style>
 </body>
 </html>
