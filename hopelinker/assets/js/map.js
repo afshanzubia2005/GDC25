@@ -41,7 +41,8 @@ getCoordinates(addressString).then(
     coordinates => {
     console.log(coordinates);     
     var coordinates1 = coordinates;
-    var map = L.map('map').setView(coordinates1, 17);
+    var map = L.map('map').setView(40.7424, -74.1784); // previous setView coordinates: coordinates1, 17
+    
     L.maplibreGL({
       style: 'https://tiles.openfreemap.org/styles/bright'
     }).addTo(map);
