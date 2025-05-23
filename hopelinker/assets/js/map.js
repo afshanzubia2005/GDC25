@@ -37,11 +37,12 @@ async function getCoordinates(address){
     const coordinates = [parseFloat(data[0].lat), parseFloat(data[0].lon)];
     return coordinates;
 }
+
 getCoordinates(addressString).then(
     coordinates => {
     console.log(coordinates);     
     var coordinates1 = coordinates;
-    var map = L.map('map').setView(40.7424, -74.1784); // previous setView coordinates: coordinates1, 17
+    var map = L.map('map').setView(coordinates1, 17); // previous setView coordinates: coordinates1, 17
     
     L.maplibreGL({
       style: 'https://tiles.openfreemap.org/styles/bright'

@@ -24,3 +24,7 @@ flutter:
   - assets/logomini.png
   - assets/html/leafletmap.html
   - assets/js/
+  - assets/mappage/homeicon.png
+  - assets/mappage/forum.png
+  - assets/mappage/chatbot.png
+  - assets/mappage/profile.png

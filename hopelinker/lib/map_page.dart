@@ -43,6 +43,26 @@ class _MapPageState extends State<MapPage> {
           return const Center(child: CircularProgressIndicator());
         },
       ),
+      bottomNavigationBar: BottomNavigationBar(
+        items: [
+          BottomNavigationBarItem(
+            icon: Image.asset('assets/mappage/homeicon.png'),
+            label: 'Home',
+          ),
+          BottomNavigationBarItem(
+            icon: Image.asset('assets/mappage/forum.png'),
+            label: 'Forum',
+          ),
+          BottomNavigationBarItem(
+            icon: Image.asset('assets/mappage/chatbot.png'),
+            label: 'Chatbot',
+          ),
+          BottomNavigationBarItem(
+            icon: Image.asset('assets/mappage/profile.png'),
+            label: 'Profile',
+          ),
+        ],
+      ),
     );
   }
 }
