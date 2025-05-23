@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:hopelinker/signup.dart';
 import 'package:hopelinker/survey.dart';
-import 'package:hopelinker/map_page.dart'; // for debugging
+import 'package:hopelinker/home.dart'; // changed import to home.dart
 
 void main() {
   runApp(
-    const MaterialApp(
-      home: MapPage(), // no const unlss MapPage constructor is const
+    MaterialApp(
+      home: const HomeMenu(),
+      debugShowCheckedModeBanner: false, 
     ),
   );
-  // changing to MapPage for debugging
 }
 
 class MainApp extends StatelessWidget {

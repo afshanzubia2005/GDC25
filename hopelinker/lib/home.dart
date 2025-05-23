@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'map_page.dart';
 
 class HomeMenu extends StatefulWidget {
+  const HomeMenu({Key? key}) : super(key: key);
+  
   @override
   _HomeMenuState createState() => _HomeMenuState();
 }
@@ -37,14 +39,11 @@ class _HomeMenuState extends State<HomeMenu>
           ),
         ),
         title: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              'ConnectKind',
-              style: TextStyle(
-                color: Colors.black,
-                fontWeight: FontWeight.bold,
-              ),
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,          children: [
+            Image.asset(
+              'assets/logosidetitle.png',
+              height: 40,
+              fit: BoxFit.contain,
             ),
             Row(
               children: [
@@ -55,11 +54,14 @@ class _HomeMenuState extends State<HomeMenu>
             ),
           ],
         ),
-      ),
-      body: Stack(
+      ),      body: Stack(
         children: [
-          Positioned.fill(child: MapPage(),
-          ),          Positioned(
+          // Map layer at the bottom
+          Positioned.fill(
+            child: MapPage(),
+          ),
+          // Sliding panel for tabs
+          Positioned(
             top: MediaQuery.of(context).size.height * 0.3,
             left: 0,
             right: 0,
@@ -137,8 +139,51 @@ class _HomeMenuState extends State<HomeMenu>
                   ),
                 ],
               )
-            )),
-        ],
+            )          ),
+        ],      ),      bottomNavigationBar: Container(
+        height: 80, // Height remains larger for better visibility
+        decoration: const BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('assets/mappage/homebackgroundCopy.png'),
+            fit: BoxFit.cover,
+          ),
+        ),
+        child: Theme(
+          data: ThemeData(
+            canvasColor: Colors.transparent, // Ensure full transparency
+          ),
+          child: BottomNavigationBar(
+            backgroundColor: Colors.transparent, // Fully transparent background
+            elevation: 0,
+            items: [
+              BottomNavigationBarItem(
+                icon: Image.asset('assets/mappage/homeicon.png', height: 30),
+                label: 'Home',
+              ),
+              BottomNavigationBarItem(
+                icon: Image.asset('assets/mappage/forum.png', height: 30),
+                label: 'Forum',
+              ),
+              BottomNavigationBarItem(
+                icon: Image.asset('assets/mappage/chatbot.png', height: 30),
+                label: 'Chatbot',
+              ),
+              BottomNavigationBarItem(
+                icon: Image.asset('assets/mappage/profile.png', height: 30),
+                label: 'Profile',
+              ),
+            ],
+            type: BottomNavigationBarType.fixed,
+            selectedItemColor: const Color(0xFF37A5FF),
+            unselectedItemColor: Colors.grey,
+            showSelectedLabels: true,
+            showUnselectedLabels: true,
+            currentIndex: 0,
+            onTap: (index) {
+              // Handle navigation
+            },
+          ),
+        ),
       ),
     );
   }
