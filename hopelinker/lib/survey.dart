@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:hopelinker/map_page.dart';
+import 'package:flutter/services.dart'; 
 import 'package:hopelinker/home.dart';
+import 'package:hopelinker/survey_loading.dart';
 
 class SurveyScreen extends StatefulWidget {
   const SurveyScreen({super.key});
@@ -41,15 +42,20 @@ class _SurveyScreenState extends State<SurveyScreen> {
       'question': 'Address',
       'options': [], // check online and autocorrect?
       'isText': true,
+    },    {
+      'question': 'Country of birth',
+      'options': ['U.S.', 'Other (Outside of U.S)'],
     },
     {
-      'question': 'Country of birth',
-      'options': ['U.S.', 'Other'],
+      'question': 'Select Country',
+      'options': ['Afghanistan', 'Albania', 'Algeria', 'Andorra', 'Angola', 'Antigua and Barbuda', 'Argentina', 'Armenia', 'Australia', 'Austria', 'Azerbaijan', 'Bahamas', 'Bahrain', 'Bangladesh', 'Barbados', 'Belarus', 'Belgium', 'Belize', 'Benin', 'Bhutan', 'Bolivia', 'Bosnia and Herzegovina', 'Botswana', 'Brazil', 'Brunei', 'Bulgaria', 'Burkina Faso', 'Burundi', 'Cabo Verde', 'Cambodia', 'Cameroon', 'Canada', 'Central African Republic', 'Chad', 'Chile', 'China', 'Colombia', 'Comoros', 'Congo', 'Costa Rica', 'Croatia', 'Cuba', 'Cyprus', 'Czech Republic', 'Denmark', 'Djibouti', 'Dominica', 'Dominican Republic', 'Ecuador', 'Egypt', 'El Salvador', 'Equatorial Guinea', 'Eritrea', 'Estonia', 'Eswatini', 'Ethiopia', 'Fiji', 'Finland', 'France', 'Gabon', 'Gambia', 'Georgia', 'Germany', 'Ghana', 'Greece', 'Grenada', 'Guatemala', 'Guinea', 'Guinea-Bissau', 'Guyana', 'Haiti', 'Honduras', 'Hungary', 'Iceland', 'India', 'Indonesia', 'Iran', 'Iraq', 'Ireland', 'Israel', 'Italy', 'Jamaica', 'Japan', 'Jordan', 'Kazakhstan', 'Kenya', 'Kiribati', 'Korea, North', 'Korea, South', 'Kosovo', 'Kuwait', 'Kyrgyzstan', 'Laos', 'Latvia', 'Lebanon', 'Lesotho', 'Liberia', 'Libya', 'Liechtenstein', 'Lithuania', 'Luxembourg', 'Madagascar', 'Malawi', 'Malaysia', 'Maldives', 'Mali', 'Malta', 'Marshall Islands', 'Mauritania', 'Mauritius', 'Mexico', 'Micronesia', 'Moldova', 'Monaco', 'Mongolia', 'Montenegro', 'Morocco', 'Mozambique', 'Myanmar', 'Namibia', 'Nauru', 'Nepal', 'Netherlands', 'New Zealand', 'Nicaragua', 'Niger', 'Nigeria', 'North Macedonia', 'Norway', 'Oman', 'Pakistan', 'Palau', 'Palestine', 'Panama', 'Papua New Guinea', 'Paraguay', 'Peru', 'Philippines', 'Poland', 'Portugal', 'Qatar', 'Romania', 'Russia', 'Rwanda', 'Saint Kitts and Nevis', 'Saint Lucia', 'Saint Vincent and the Grenadines', 'Samoa', 'San Marino', 'Sao Tome and Principe', 'Saudi Arabia', 'Senegal', 'Serbia', 'Seychelles', 'Sierra Leone', 'Singapore', 'Slovakia', 'Slovenia', 'Solomon Islands', 'Somalia', 'South Africa', 'South Sudan', 'Spain', 'Sri Lanka', 'Sudan', 'Suriname', 'Sweden', 'Switzerland', 'Syria', 'Taiwan', 'Tajikistan', 'Tanzania', 'Thailand', 'Timor-Leste', 'Togo', 'Tonga', 'Trinidad and Tobago', 'Tunisia', 'Turkey', 'Turkmenistan', 'Tuvalu', 'Uganda', 'Ukraine', 'United Arab Emirates', 'United Kingdom', 'Uruguay', 'Uzbekistan', 'Vanuatu', 'Vatican City', 'Venezuela', 'Vietnam', 'Yemen', 'Zambia', 'Zimbabwe'],
+      'skipIf': {'question': 'Country of birth', 'answer': 'U.S.'},
     },
     {
       'question': 'City, State, Zip Code',
       'options': [],
-      'isText': 'cityStateZip', // Custom flag for special handling
+      'isText': 'cityStateZip',
+      'skipIf': {'question': 'Country of birth', 'answer': 'Other (Outside of U.S)'},
     },
     {
       'question': 'Household income',
@@ -116,15 +122,114 @@ class _SurveyScreenState extends State<SurveyScreen> {
       ],
     },
   ];
-
   int _currentStep = 0;
   late final List<String> _answers;
+  late final List<TextEditingController> _controllers;
+  late final List<GlobalKey<FormState>> _formKeys; 
 
   @override
   void initState() {
     super.initState();
     _answers = List.filled(_questions.length, '');
+    _controllers = List.generate(_questions.length, (index) => TextEditingController());
+    _formKeys = List.generate(_questions.length, (index) => GlobalKey<FormState>());
   }
+
+    @override
+  void dispose() {
+    // Dispose all controllers
+    for (var controller in _controllers) {
+      controller.dispose();
+    }    super.dispose();
+  }
+
+  // Email validation function
+  bool _isValidEmail(String email) {
+    return RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(email);
+  }
+
+  // Phone validation function
+  bool _isValidPhone(String phone) {
+    String cleaned = phone.replaceAll(RegExp(r'[^\d]'), '');
+    return cleaned.length == 10;
+  }
+
+  // Get input formatter based on question type
+  List<TextInputFormatter> _getInputFormatters(String question) {
+    if (question.toLowerCase().contains('age') || question.toLowerCase().contains('children') || question.toLowerCase().contains('dependents')) {
+      return [FilteringTextInputFormatter.digitsOnly];
+    }
+    if (question.toLowerCase().contains('phone')) {
+      return [FilteringTextInputFormatter.digitsOnly, LengthLimitingTextInputFormatter(10)];
+    }
+    return [];
+  }
+
+  // Get keyboard type based on question
+  TextInputType _getKeyboardType(String question) {
+    if (question.toLowerCase().contains('email')) {
+      return TextInputType.emailAddress;
+    }
+    if (question.toLowerCase().contains('phone')) {
+      return TextInputType.phone;
+    }
+    if (question.toLowerCase().contains('age') || question.toLowerCase().contains('children') || question.toLowerCase().contains('dependents')) {
+      return TextInputType.number;
+    }
+    return TextInputType.text;
+  }
+
+  // Validation function
+  String? _validateInput(String? value, String question) {
+    if (value == null || value.isEmpty) {
+      return 'This field is required';
+    }
+
+    if (question.toLowerCase().contains('email')) {
+      if (!_isValidEmail(value)) {
+        return 'Please enter a valid email address';
+      }
+    }
+
+    if (question.toLowerCase().contains('phone')) {
+      if (!_isValidPhone(value)) {
+        return 'Please enter a valid 10-digit phone number';
+      }
+    }    if (question.toLowerCase().contains('age')) {
+      int? age = int.tryParse(value);
+      if (age == null || age < 13 || age > 110) {
+        return 'Please enter a valid age (13-110)';
+      }
+    }
+
+    if (question.toLowerCase().contains('children') || question.toLowerCase().contains('dependents')) {
+      int? number = int.tryParse(value);
+      if (number == null || number < 0) {
+        return 'Please enter a valid number (0 or greater)';
+      }
+    }
+
+    return null;
+  }
+
+  // Helper function for hint text
+  String _getHintText(String question) {
+    if (question.toLowerCase().contains('email')) {
+      return 'example@email.com';
+    }
+    if (question.toLowerCase().contains('phone')) {
+      return '1234567890';
+    }
+    if (question.toLowerCase().contains('age')) {
+      return 'Enter your age';
+    }
+    if (question.toLowerCase().contains('display name')) {
+      return 'Enter display name';
+    }
+    if (question.toLowerCase().contains('address')) {
+      return 'Enter your address';
+    }
+    return 'Enter your answer';  }
 
   @override
   Widget build(BuildContext context) {
@@ -189,7 +294,7 @@ class _SurveyScreenState extends State<SurveyScreen> {
                   padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: const Color(0xFFF5F5F5).withValues(alpha: 0.3),
+                    color: const Color(0xFFF5F5F5).withOpacity(0.3),
                     boxShadow: [
                       BoxShadow(
                         color: Colors.black.withAlpha(26),
@@ -259,11 +364,15 @@ class _SurveyScreenState extends State<SurveyScreen> {
                           // City TextField
                           Expanded(
                             child: TextField(
-                              decoration: const InputDecoration(
-                                labelText: 'City',
-                                filled: true,
-                                fillColor: Colors.white,
-                                border: OutlineInputBorder(),
+                              decoration: const InputDecoration(                              labelText: 'City',
+                              filled: true,
+                              fillColor: Colors.white,
+                              border: OutlineInputBorder(),
+                              errorStyle: TextStyle(
+                                color: Colors.white,
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
                               ),
                               onChanged: (val) {
                                 setState(() {
@@ -278,11 +387,15 @@ class _SurveyScreenState extends State<SurveyScreen> {
                         Expanded(
                           child: DropdownButtonFormField<String>(
                             value: _selectedState,
-                            decoration: const InputDecoration(
-                              labelText: 'State',
+                            decoration: const InputDecoration(                              labelText: 'State',
                               filled: true,
                               fillColor: Colors.white,
                               border: OutlineInputBorder(),
+                              errorStyle: TextStyle(
+                                color: Colors.white,
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                             items: _usStates.map((state) {
                               return DropdownMenuItem(
@@ -302,11 +415,15 @@ class _SurveyScreenState extends State<SurveyScreen> {
                         // Zip TextField
                         Expanded(
                           child: TextField(
-                            decoration: const InputDecoration(
-                              labelText: 'Zip',
+                            decoration: const InputDecoration(                              labelText: 'Zip',
                               filled: true,
                               fillColor: Colors.white,
                               border: OutlineInputBorder(),
+                              errorStyle: TextStyle(
+                                color: Colors.white,
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                             keyboardType: TextInputType.number,
                             onChanged: (val) {
@@ -323,73 +440,148 @@ class _SurveyScreenState extends State<SurveyScreen> {
                   else if (isText == true)
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 32.0),
-                      child: TextField(
-                        onChanged: (val) {
-                          setState(() {
-                            _answers[_currentStep] = val;
-                          });
-                        },
-                        style: const TextStyle(fontSize: 20, color: Colors.black),
-                        decoration: InputDecoration(
-                          filled: true,
-                          fillColor: Colors.white,
-                          hintText: 'Enter your answer',
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(16),
-                            borderSide: BorderSide.none,
+                      child: Form(
+                        key: _formKeys[_currentStep],
+                        child: TextFormField(
+                          controller: _controllers[_currentStep],
+                          keyboardType: _getKeyboardType(currentQ['question']),
+                          inputFormatters: _getInputFormatters(currentQ['question']),
+                          validator: (value) => _validateInput(value, currentQ['question']),
+                          onChanged: (value) {
+                            setState(() {
+                              _answers[_currentStep] = value;
+                            });
+                          },
+                          style: const TextStyle(fontSize: 20, color: Colors.black),                          decoration: InputDecoration(
+                            hintText: _getHintText(currentQ['question']),
+                            filled: true,
+                            fillColor: Colors.white.withOpacity(0.9),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide: BorderSide.none,
+                            ),
+                            contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+                            errorStyle: TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
-                          contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
                         ),
                       ),
                     )
-                  else
-                    ...List.generate(
-                      currentQ['options'].length,
-                      (optionIndex) {
-                        final option = currentQ['options'][optionIndex];
-                        final isSelected = _answers[_currentStep] == option;
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 32),
-                          child: ElevatedButton(
-                            onPressed: () {
-                              setState(() {
-                                _answers[_currentStep] = option;
-                              });
-                            },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: isSelected
-                                  ? const Color(0xFF293C72)
-                                  : Colors.white,
-                              foregroundColor: isSelected
-                                  ? Colors.white
-                                  : const Color(0xFF293C72),
-                              minimumSize: const Size.fromHeight(48),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(16),
-                              ),
-                              elevation: isSelected ? 4 : 1,
-                            ),
-                            child: Text(
-                              option,
-                              style: TextStyle(
-                                fontSize: 20,
-                                fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-                              ),
-                            ),
+                  else if (currentQ['question'] == 'Select Country')
+                    Container(
+                      margin: EdgeInsets.symmetric(horizontal: 32),
+                      height: MediaQuery.of(context).size.height * 0.4,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(12),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.1),
+                            blurRadius: 10,
+                            offset: Offset(0, 4),
                           ),
-                        );
-                      },
+                        ],
+                      ),
+                      child: ListView.builder(
+                        padding: EdgeInsets.symmetric(vertical: 8),                        itemCount: currentQ['options'].length,
+                        itemBuilder: (context, index) {
+                          final isSelected = _answers[_currentStep] == currentQ['options'][index];                          return Container(
+                            margin: EdgeInsets.symmetric(vertical: 4, horizontal: 12),
+                            decoration: BoxDecoration(
+                              color: isSelected ? const Color(0xFF37A5FF) : null,
+                              borderRadius: BorderRadius.circular(8),
+                              boxShadow: isSelected ? [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.1),
+                                  blurRadius: 4,
+                                  offset: Offset(0, 2),
+                                ),
+                              ] : null,
+                            ),
+                            child: ListTile(
+                              title: Text(
+                                currentQ['options'][index],
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                                  color: isSelected ? Colors.white : Colors.black87,
+                                ),
+                              ),
+                              contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                              selected: isSelected,
+                              onTap: () {
+                                setState(() {
+                                  _answers[_currentStep] = currentQ['options'][index];
+                                });
+                              },
+                            ),
+                          );
+                        },
+                      ),
+                    )
+                  else if (currentQ['options'].isNotEmpty)
+                    Wrap(                      spacing: 12,
+                      runSpacing: 12,
+                      alignment: WrapAlignment.center,
+                      children: List.generate(
+                        currentQ['options'].length,                        (index) => ChoiceChip(
+                          padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                          labelPadding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                          label: Text(
+                            currentQ['options'][index],
+                            style: TextStyle(
+                              fontSize: 18,
+                              color: _answers[_currentStep] == currentQ['options'][index] 
+                                  ? Colors.white 
+                                  : Colors.black87,
+                            ),
+                          ),                          selected: _answers[_currentStep] == currentQ['options'][index],
+                          selectedColor: const Color(0xFF37A5FF),
+                          checkmarkColor: Colors.white,
+                          backgroundColor: Colors.white,
+                          onSelected: (selected) {
+                            if (selected) {
+                              setState(() {
+                                _answers[_currentStep] = currentQ['options'][index];
+                              });
+                            }
+                          },
+                        ),
+                      ),
                     ),
                   const SizedBox(height: 32),
                   // Navigation buttons
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      if (_currentStep > 0)
+                    children: [                      if (_currentStep > 0)
                         TextButton(
                           onPressed: () {
+                            // Find the appropriate previous question when going back
+                            int prevStep = _currentStep - 1;
+                            
+                            // Special handling for going back from country selection
+                            if (currentQ['question'] == 'Select Country') {
+                              // Find the Country of birth question
+                              int countryBirthIndex = _questions.indexWhere((q) => q['question'] == 'Country of birth');
+                              if (countryBirthIndex >= 0) {
+                                prevStep = countryBirthIndex;
+                              }
+                            }
+                            
+                            // Special handling for going back from City,State,Zip
+                            if (currentQ['question'] == 'City, State, Zip Code') {
+                              // Find the Country of birth question
+                              int countryBirthIndex = _questions.indexWhere((q) => q['question'] == 'Country of birth');
+                              if (countryBirthIndex >= 0) {
+                                prevStep = countryBirthIndex;
+                              }
+                            }
+                            
                             setState(() {
-                              _currentStep -= 1;
+                              _currentStep = prevStep;
                             });
                           },
                           child: const Text(
@@ -399,28 +591,53 @@ class _SurveyScreenState extends State<SurveyScreen> {
                         ),
                       const SizedBox(width: 16),
                       ElevatedButton(
-                        onPressed: _answers[_currentStep].isNotEmpty
-                            ? () {
-                                if (_currentStep < _questions.length - 1) {
-                                  setState(() {
-                                    _currentStep += 1;
-                                  });
-                                } else {
-                                  Navigator.pushReplacement(
-                                    context,
-                                    MaterialPageRoute(builder: (context) => HomeMenu()),
-                                  );
+                        onPressed: () {
+                          bool canProceed = false;
+                          
+                          if (isText) {
+                            // Validate text input
+                            if (_formKeys[_currentStep].currentState?.validate() ?? false) {
+                              canProceed = true;
+                            }
+                          } else {
+                            // Check if option is selected
+                            canProceed = _answers[_currentStep].isNotEmpty;
+                          }                          if (canProceed) {
+                            if (_currentStep < _questions.length - 1) {
+                              // Find next non-skipped question
+                              int nextStep = _currentStep + 1;
+                              while (nextStep < _questions.length) {
+                                final nextQ = _questions[nextStep];
+                                if (nextQ.containsKey('skipIf')) {
+                                  final skip = nextQ['skipIf'];
+                                  // Find the referenced question for the skipIf condition
+                                  int prevIndex = -1;
+                                  for (int i = 0; i < _questions.length; i++) {
+                                    if (_questions[i]['question'] == skip['question']) {
+                                      prevIndex = i;
+                                      break;
+                                    }
+                                  }
+                                  
+                                  // If question found and answer matches skip condition, skip this question
+                                  if (prevIndex >= 0 && _answers[prevIndex] == skip['answer']) {
+                                    nextStep++;
+                                    continue;
+                                  }
                                 }
+                                break;
                               }
-                            : null,
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFF0090C1),
-                          foregroundColor: Colors.white,
-                          padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 14),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                        ),
+                              setState(() {
+                                _currentStep = nextStep;
+                              });
+                            } else {
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(builder: (context) => SurveyLoadingScreen()),
+                              );
+                            }
+                          }
+                        },
                         child: Text(
                           _currentStep < _questions.length - 1 ? 'Next' : 'Finish',
                           style: const TextStyle(fontSize: 18),
@@ -434,7 +651,7 @@ class _SurveyScreenState extends State<SurveyScreen> {
                     onPressed: () {
                       Navigator.pushReplacement(
                         context,
-                        MaterialPageRoute(builder: (context) => MapPage()),
+                        MaterialPageRoute(builder: (context) => HomeMenu()), // Changed from MapPage to HomeMenu
                       );
                     },
                     child: const Text(
