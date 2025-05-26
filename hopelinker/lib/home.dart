@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:hopelinker/profile.dart';
 import 'map_page.dart';
 
 class HomeMenu extends StatefulWidget {
   const HomeMenu({Key? key}) : super(key: key);
-  
+
   @override
   _HomeMenuState createState() => _HomeMenuState();
 }
@@ -23,6 +24,7 @@ class _HomeMenuState extends State<HomeMenu>
     _tabController.dispose();
     super.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -39,7 +41,8 @@ class _HomeMenuState extends State<HomeMenu>
           ),
         ),
         title: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,          children: [
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
             Image.asset(
               'assets/logosidetitle.png',
               height: 40,
@@ -47,19 +50,22 @@ class _HomeMenuState extends State<HomeMenu>
             ),
             Row(
               children: [
+                Icon(Icons.search, color: Colors.black),
+                SizedBox(width: 10),
                 Icon(Icons.notifications, color: Colors.black),
                 SizedBox(width: 10),
                 Icon(Icons.bookmark, color: Colors.black),
+                SizedBox(width: 10),
+                Icon(Icons.filter, color: Colors.black),
               ],
             ),
           ],
         ),
-      ),      body: Stack(
+      ),
+      body: Stack(
         children: [
           // Map layer at the bottom
-          Positioned.fill(
-            child: MapPage(),
-          ),
+          Positioned.fill(child: MapPage()),
           // Sliding panel for tabs
           Positioned(
             top: MediaQuery.of(context).size.height * 0.3,
@@ -80,15 +86,14 @@ class _HomeMenuState extends State<HomeMenu>
                     offset: Offset(0, -2),
                   ),
                 ],
-              ),            child: Column(
+              ),
+              child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   TabBar(
                     controller: _tabController,
-                    tabs: [
-                      Tab(text: 'Services'),
-                      Tab(text: 'Events'),
-                    ],                    labelColor: const Color(0xFF37A5FF),
+                    tabs: [Tab(text: 'Services'), Tab(text: 'Events')],
+                    labelColor: const Color(0xFF37A5FF),
                     unselectedLabelColor: Colors.grey,
                     indicatorColor: const Color(0xFF37A5FF),
                   ),
@@ -112,7 +117,10 @@ class _HomeMenuState extends State<HomeMenu>
                                   width: 60,
                                   height: 60,
                                   color: Colors.grey[300],
-                                  child: Icon(Icons.image, color: Colors.black54),
+                                  child: Icon(
+                                    Icons.image,
+                                    color: Colors.black54,
+                                  ),
                                 ),
                                 title: Text('Food Pantry'),
                                 subtitle: Column(
@@ -123,7 +131,8 @@ class _HomeMenuState extends State<HomeMenu>
                                   ],
                                 ),
                                 trailing: Column(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
                                   children: [
                                     Icon(Icons.notifications),
                                     Icon(Icons.bookmark),
@@ -138,9 +147,12 @@ class _HomeMenuState extends State<HomeMenu>
                     ),
                   ),
                 ],
-              )
-            )          ),
-        ],      ),      bottomNavigationBar: Container(
+              ),
+            ),
+          ),
+        ],
+      ),
+      bottomNavigationBar: Container(
         height: 80, // Height remains larger for better visibility
         decoration: const BoxDecoration(
           image: DecorationImage(
@@ -178,9 +190,13 @@ class _HomeMenuState extends State<HomeMenu>
             unselectedItemColor: Colors.grey,
             showSelectedLabels: true,
             showUnselectedLabels: true,
-            currentIndex: 0,
             onTap: (index) {
-              // Handle navigation
+              if (index == 3) {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const ProfilePage()),
+                );
+              }
             },
           ),
         ),
