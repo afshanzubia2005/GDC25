@@ -1,18 +1,38 @@
 import 'package:flutter/material.dart';
+import 'bottom_nav_bar.dart';
 
-class ForumPage extends StatefulWidget {
+class ForumPage extends StatelessWidget {
   const ForumPage({super.key});
 
   @override
-  State<ForumPage> createState() => _ForumPageState();
-}
-
-class _ForumPageState extends State<ForumPage> {
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Forum')),
-      body: Center(child: Text('here is the forum page')),
+      appBar: AppBar(
+        toolbarHeight: 60,
+        automaticallyImplyLeading: false,
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Colors.orange.shade200, Colors.yellow.shade100],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+          ),
+        ),
+        title: const Text(
+          'Forum',
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        centerTitle: true,
+      ),
+      body: const Center(
+        child: Text('Forum Page', style: TextStyle(fontSize: 24)),
+      ),
+      bottomNavigationBar: const CustomBottomNavBar(selectedIndex: 1),
     );
   }
 }

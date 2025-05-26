@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:hopelinker/profile.dart';
 import 'map_page.dart';
+import 'bottom_nav_bar.dart';
 
 class HomeMenu extends StatefulWidget {
   const HomeMenu({Key? key}) : super(key: key);
@@ -50,13 +50,9 @@ class _HomeMenuState extends State<HomeMenu>
             ),
             Row(
               children: [
-                Icon(Icons.search, color: Colors.black),
-                SizedBox(width: 10),
                 Icon(Icons.notifications, color: Colors.black),
                 SizedBox(width: 10),
                 Icon(Icons.bookmark, color: Colors.black),
-                SizedBox(width: 10),
-                Icon(Icons.filter, color: Colors.black),
               ],
             ),
           ],
@@ -152,55 +148,7 @@ class _HomeMenuState extends State<HomeMenu>
           ),
         ],
       ),
-      bottomNavigationBar: Container(
-        height: 80, // Height remains larger for better visibility
-        decoration: const BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage('assets/mappage/homebackgroundCopy.png'),
-            fit: BoxFit.cover,
-          ),
-        ),
-        child: Theme(
-          data: ThemeData(
-            canvasColor: Colors.transparent, // Ensure full transparency
-          ),
-          child: BottomNavigationBar(
-            backgroundColor: Colors.transparent, // Fully transparent background
-            elevation: 0,
-            items: [
-              BottomNavigationBarItem(
-                icon: Image.asset('assets/mappage/homeicon.png', height: 30),
-                label: 'Home',
-              ),
-              BottomNavigationBarItem(
-                icon: Image.asset('assets/mappage/forum.png', height: 30),
-                label: 'Forum',
-              ),
-              BottomNavigationBarItem(
-                icon: Image.asset('assets/mappage/chatbot.png', height: 30),
-                label: 'Chatbot',
-              ),
-              BottomNavigationBarItem(
-                icon: Image.asset('assets/mappage/profile.png', height: 30),
-                label: 'Profile',
-              ),
-            ],
-            type: BottomNavigationBarType.fixed,
-            selectedItemColor: const Color(0xFF37A5FF),
-            unselectedItemColor: Colors.grey,
-            showSelectedLabels: true,
-            showUnselectedLabels: true,
-            onTap: (index) {
-              if (index == 3) {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const ProfilePage()),
-                );
-              }
-            },
-          ),
-        ),
-      ),
+      bottomNavigationBar: const CustomBottomNavBar(selectedIndex: 0),
     );
   }
 }
