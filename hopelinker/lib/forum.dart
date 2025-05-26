@@ -30,7 +30,10 @@ class ForumPage extends StatelessWidget {
         centerTitle: true,
       ),
       body: const Center(
-        child: Text('Forum Page', style: TextStyle(fontSize: 24)),
+        child: Text(
+          'Forum Page',
+          style: TextStyle(fontSize: 24),
+        ),
       ),
       bottomNavigationBar: const CustomBottomNavBar(selectedIndex: 1),
     );
