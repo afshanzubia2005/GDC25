@@ -1,8 +1,8 @@
 import requests
 import json
 
-API_KEY = "AIzaSyD2jNotloRvwYU-bALHLyv_W0hKpsqWKMA"
-# this is my api key 
+API_KEY = os.getenv("GOOGLE_MAPS_API_KEY")
+# import the api key from local environment before running
 LOCATION = "40.5169,74.4063"  #new jersey lat/long
 RADIUS = 1000000000000  #search radius
 QUERY = "nonprofit organization"
